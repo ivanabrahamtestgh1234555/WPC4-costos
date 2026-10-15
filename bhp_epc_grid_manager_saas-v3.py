@@ -480,4 +480,4 @@ elif module == "📤 Exportación de Datos (Excel/CSV)":
         )
 
 st.sidebar.markdown("---")
-st.sidebar.caption("© 2026 BHP | Control de Cubicaciones y Precios - Project ENC-3430")
+st.sidebar.caption("Cox dpto Estudios")
