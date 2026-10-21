@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 # PAGE CONFIGURATION
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="BHP ENC-3430 | Portal de Cotizaciones y Gestión de Proveedores",
+    page_title="Cox Chile | Portal de Cotizaciones y Licitaciones",
     page_icon="📋",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -41,6 +41,13 @@ st.markdown("""
         padding: 4px 10px;
         border-radius: 6px;
         font-weight: bold;
+    }
+    .cox-logo-box {
+        background-color: #0F172A;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 15px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -75,24 +82,30 @@ if "equipos_db" not in st.session_state:
 
 if "vendedores_db" not in st.session_state:
     initial_vendedores = [
-        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "Hitachi Energy (ABB)", "Precio_USD": 14500000.0, "Lead_Time_Meses": 14, "Garantia_Años": 3, "Estado": "Adjudicada Base"},
-        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "Siemens Energy", "Precio_USD": 15200000.0, "Lead_Time_Meses": 15, "Garantia_Años": 2, "Estado": "En Evaluación"},
-        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "GE Vernova", "Precio_USD": 14850000.0, "Lead_Time_Meses": 14, "Garantia_Años": 2, "Estado": "En Evaluación"},
-        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Siemens Energy", "Precio_USD": 3800000.0, "Lead_Time_Meses": 12, "Garantia_Años": 3, "Estado": "Adjudicada Base"},
-        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Hitachi Energy", "Precio_USD": 3950000.0, "Lead_Time_Meses": 13, "Garantia_Años": 2, "Estado": "En Evaluación"},
-        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Hyundai Electric", "Precio_USD": 3650000.0, "Lead_Time_Meses": 11, "Garantia_Años": 2, "Estado": "En Evaluación"},
-        {"ID": "EQ-012", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Empresa": "Prysmian Group", "Precio_USD": 450.0, "Lead_Time_Meses": 8, "Garantia_Años": 5, "Estado": "Adjudicada Base"},
-        {"ID": "EQ-012", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Empresa": "Nexans", "Precio_USD": 475.0, "Lead_Time_Meses": 9, "Garantia_Años": 5, "Estado": "En Evaluación"},
-        {"ID": "EQ-016", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM", "Empresa": "Prysmian / General Cable", "Precio_USD": 14.50, "Lead_Time_Meses": 6, "Garantia_Años": 3, "Estado": "Adjudicada Base"},
-        {"ID": "EQ-016", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM", "Empresa": "Midal Cables", "Precio_USD": 13.90, "Lead_Time_Meses": 7, "Garantia_Años": 2, "Estado": "En Evaluación"}
+        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "Hitachi Energy (ABB)", "Precio_USD": 14500000.0, "Lead_Time_Meses": 14, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo_Adjunto": "Cotizacion_Hitachi_GIS245kV.pdf", "File_Bytes": None},
+        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "Siemens Energy", "Precio_USD": 15200000.0, "Lead_Time_Meses": 15, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Oferta_Siemens_GIS.pdf", "File_Bytes": None},
+        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "GE Vernova", "Precio_USD": 14850000.0, "Lead_Time_Meses": 14, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "GE_Vernova_Proposal.pdf", "File_Bytes": None},
+        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Siemens Energy", "Precio_USD": 3800000.0, "Lead_Time_Meses": 12, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo_Adjunto": "Siemens_Trafo125MVA.pdf", "File_Bytes": None},
+        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Hitachi Energy", "Precio_USD": 3950000.0, "Lead_Time_Meses": 13, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Hitachi_Trafo_Quote.pdf", "File_Bytes": None},
+        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Hyundai Electric", "Precio_USD": 3650000.0, "Lead_Time_Meses": 11, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Hyundai_Transformers_Offer.pdf", "File_Bytes": None},
+        {"ID": "EQ-012", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Empresa": "Prysmian Group", "Precio_USD": 450.0, "Lead_Time_Meses": 8, "Garantia_Años": 5, "Estado": "Adjudicada Base", "Archivo_Adjunto": "Prysmian_XLPE_Quote.pdf", "File_Bytes": None},
+        {"ID": "EQ-012", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Empresa": "Nexans", "Precio_USD": 475.0, "Lead_Time_Meses": 9, "Garantia_Años": 5, "Estado": "En Evaluación", "Archivo_Adjunto": "Nexans_HV_Cable.pdf", "File_Bytes": None},
+        {"ID": "EQ-016", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM", "Empresa": "Prysmian / General Cable", "Precio_USD": 14.50, "Lead_Time_Meses": 6, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo_Adjunto": "GeneralCable_AAAC.pdf", "File_Bytes": None},
+        {"ID": "EQ-016", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM", "Empresa": "Midal Cables", "Precio_USD": 13.90, "Lead_Time_Meses": 7, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Midal_Conductors_Offer.pdf", "File_Bytes": None}
     ]
     st.session_state.vendedores_db = pd.DataFrame(initial_vendedores)
 
 # -----------------------------------------------------------------------------
-# SIDEBAR NAVIGATION
+# SIDEBAR NAVIGATION WITH COX LOGO
 # -----------------------------------------------------------------------------
-st.sidebar.markdown("## BHP ENC-3430")
-st.sidebar.markdown("**Portal de Cotizaciones y Licitationes**")
+st.sidebar.markdown("""
+<div class="cox-logo-box">
+    <h2 style="color: #38BDF8; margin: 0; font-weight: 800; font-size: 1.8rem; letter-spacing: 2px;">COX</h2>
+    <p style="color: #94A3B8; margin: 2px 0 0 0; font-size: 0.85rem; font-weight: 600;">Área de Estudios - Cox Chile</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("**Proyecto Escondida Concentrator (ENC-3430)**")
 st.sidebar.markdown("---")
 
 module = st.sidebar.radio(
@@ -107,14 +120,14 @@ module = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.caption("© 2026 BHP | Supply Chain & Procurement - ENC-3430")
+st.sidebar.caption("Área de Estudios - Cox Chile")
 
 # -----------------------------------------------------------------------------
 # MODULE 1: DASHBOARD DE COTIZACIONES Y RFQ
 # -----------------------------------------------------------------------------
 if module == "📊 Dashboard de Cotizaciones & RFQ":
-    st.markdown('<div class="main-header">Control Ejecutivo de Cotizaciones y Licitationes (RFQ)</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Estado de Avance de Compras y Cotizaciones Pendientes - Proyecto ENC-3430</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">Control Ejecutivo de Cotizaciones y Licitaciones (RFQ)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Área de Estudios - Cox Chile | Estado de Avance de Compras y Cotizaciones - Proyecto ENC-3430</div>', unsafe_allow_html=True)
 
     df_eq = st.session_state.equipos_db
     
@@ -180,7 +193,6 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
     st.markdown('<div class="main-header">Checklist Interactivo de Cotizaciones de Equipamiento</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Marque con el Ticket (✅) los equipos cuya cotización haya sido recibida o adjudicada</div>', unsafe_allow_html=True)
 
-    # Filter selector
     filter_area = st.selectbox("Filtrar por Área de Proyecto:", ["Todas las Áreas"] + list(st.session_state.equipos_db["Area"].unique()))
     
     df_view = st.session_state.equipos_db.copy()
@@ -189,11 +201,8 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
 
     st.markdown("#### Lista de Equipos y Control de Estado de Licitación:")
     
-    # Interactive checklist table using data_editor or checkboxes
     for idx, row in df_view.iterrows():
         c_check, c_info, c_supplier, c_date = st.columns([1.5, 5.5, 3, 2])
-        
-        # Unique key for checkboxes
         chk_key = f"chk_{row['ID']}"
         
         is_checked = c_check.checkbox(
@@ -202,7 +211,6 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
             key=chk_key
         )
         
-        # Update session state if checkbox changed
         if is_checked != bool(row["Cotizado"]):
             st.session_state.equipos_db.loc[st.session_state.equipos_db["ID"] == row["ID"], "Cotizado"] = is_checked
             if is_checked:
@@ -231,8 +239,8 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
 # MODULE 3: CUADRO COMPARATIVO POR EMPRESA
 # -----------------------------------------------------------------------------
 elif module == "🏢 Cuadro Comparativo por Empresa":
-    st.markdown('<div class="main-header">Tabla Comparativa de Empresas Cotizantes</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Gestión de Ofertas por Proveedor y Adquisiciones del Proyecto</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">Tabla Comparativa de Empresas Cotizantes y Archivos Adjuntos</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Gestión de Ofertas por Proveedor, Carga y Descarga de Cotizaciones (PDF / Excel / Word)</div>', unsafe_allow_html=True)
 
     col_select, col_add = st.columns([5, 5])
 
@@ -241,7 +249,6 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
         equipo_lista = st.session_state.equipos_db["Equipo"].unique()
         selected_eq_name = st.selectbox("Seleccionar Equipo / Suministro:", equipo_lista)
         
-        # Retrieve Equipment Details
         eq_row = st.session_state.equipos_db[st.session_state.equipos_db["Equipo"] == selected_eq_name].iloc[0]
         eq_id = eq_row["ID"]
         
@@ -256,9 +263,15 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
             v_garantia = st.number_input("Años de Garantía:", min_value=1, value=2)
             v_estado = st.selectbox("Estado de la Oferta:", ["En Evaluación", "Adjudicada Base", "Desestimada"])
             
+            # FILE UPLOADER FOR QUOTATION DOCUMENTS
+            v_file = st.file_uploader("📄 Adjuntar documento de cotización (PDF, Excel, Word):", type=["pdf", "xlsx", "xls", "doc", "docx"])
+            
             submit_vendor = st.form_submit_button("➕ Registrar Cotización de Empresa")
             
             if submit_vendor and v_empresa:
+                filename = v_file.name if v_file is not None else "Sin Documento Adjunto"
+                file_bytes = v_file.getvalue() if v_file is not None else None
+                
                 new_v_row = {
                     "ID": eq_id,
                     "Equipo": selected_eq_name,
@@ -266,7 +279,9 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
                     "Precio_USD": v_precio,
                     "Lead_Time_Meses": v_lead,
                     "Garantia_Años": v_garantia,
-                    "Estado": v_estado
+                    "Estado": v_estado,
+                    "Archivo_Adjunto": filename,
+                    "File_Bytes": file_bytes
                 }
                 st.session_state.vendedores_db = pd.concat([st.session_state.vendedores_db, pd.DataFrame([new_v_row])], ignore_index=True)
                 
@@ -276,23 +291,40 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
                 if v_estado == "Adjudicada Base":
                     st.session_state.equipos_db.loc[st.session_state.equipos_db["ID"] == eq_id, "Proveedor_Lider"] = v_empresa
                 
-                st.success(f"✅ Cotización de {v_empresa} registrada exitosamente!")
+                st.success(f"✅ Cotización de {v_empresa} registrada exitosamente" + (f" con archivo '{filename}'" if v_file else "") + "!")
                 st.rerun()
 
     st.markdown("---")
-    st.subheader(f"📊 Tabla Comparativa de Ofertas Recibidas para: '{selected_eq_name}'")
+    st.subheader(f"📊 Tabla Comparativa de Ofertas y Documentos Recibidos para: '{selected_eq_name}'")
 
     offers_df = st.session_state.vendedores_db[st.session_state.vendedores_db["ID"] == eq_id]
 
     if len(offers_df) > 0:
-        st.dataframe(
-            offers_df[["Empresa", "Precio_USD", "Lead_Time_Meses", "Garantia_Años", "Estado"]].style.format({
-                "Precio_USD": "${:,.2f}",
-                "Lead_Time_Meses": "{:d} meses",
-                "Garantia_Años": "{:d} años"
-            }).highlight_min(axis=0, subset=["Precio_USD"], color="#D1FAE5"),
-            use_container_width=True
-        )
+        # Render table with download buttons for attached files
+        for o_idx, o_row in offers_df.iterrows():
+            o_c1, o_c2, o_c3, o_c4, o_c5, o_c6 = st.columns([3, 2.5, 2, 2, 2, 2.5])
+            with o_c1:
+                st.markdown(f"**{o_row['Empresa']}**")
+                st.caption(f"Estado: {o_row['Estado']}")
+            with o_c2:
+                st.markdown(f"**${o_row['Precio_USD']:,.2f} USD**")
+            with o_c3:
+                st.write(f"⏱️ {o_row['Lead_Time_Meses']} meses")
+            with o_c4:
+                st.write(f"🛡️ {o_row['Garantia_Años']} años")
+            with o_c5:
+                st.write(f"📎 `{o_row['Archivo_Adjunto']}`")
+            with o_c6:
+                if o_row.get("File_Bytes") is not None:
+                    st.download_button(
+                        label="📥 Descargar Cotización",
+                        data=o_row["File_Bytes"],
+                        file_name=o_row["Archivo_Adjunto"],
+                        key=f"dl_{eq_id}_{o_idx}"
+                    )
+                else:
+                    st.caption("Ficha de referencia base")
+            st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
 
         fig_offers = px.bar(
             offers_df,
@@ -311,7 +343,7 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
 # -----------------------------------------------------------------------------
 elif module == "📦 Base de Datos Maestra de Equipos":
     st.markdown('<div class="main-header">Base de Datos de Equipamiento por Cotizar</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Registro Maestro MTO y Estado de Licitación - Proyecto ENC-3430</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Área de Estudios - Cox Chile | Registro Maestro MTO y Licitación</div>', unsafe_allow_html=True)
 
     c_f1, c_f2, c_f3 = st.columns(3)
     with c_f1:
@@ -321,7 +353,6 @@ elif module == "📦 Base de Datos Maestra de Equipos":
     with c_f3:
         f_search = st.text_input("🔍 Buscar Equipo / Ítem:", "")
 
-    # Apply filters
     filtered_db = st.session_state.equipos_db[
         (st.session_state.equipos_db["Area"].isin(f_area)) &
         (st.session_state.equipos_db["Cotizado"].isin(f_status))
@@ -343,7 +374,7 @@ elif module == "📦 Base de Datos Maestra de Equipos":
 # -----------------------------------------------------------------------------
 elif module == "📤 Exportar Reportes de Licitación":
     st.markdown('<div class="main-header">Centro de Exportación de Datos de Licitación</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Descarga de Bases de Datos de Cotizaciones y Ofertas de Proveedores (CSV)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Área de Estudios - Cox Chile | Descarga de Cotizaciones y Ofertas (CSV)</div>', unsafe_allow_html=True)
 
     d1, d2 = st.columns(2)
     with d1:
@@ -352,16 +383,18 @@ elif module == "📤 Exportar Reportes de Licitación":
         st.download_button(
             label="Descargar Registro de Cotizaciones (CSV)",
             data=csv_eq,
-            file_name="BHP_ENC3430_Estado_Cotizaciones.csv",
+            file_name="CoxChile_ENC3430_Estado_Cotizaciones.csv",
             mime="text/csv"
         )
 
     with d2:
         st.subheader("🏢 Exportar Ofertas de Empresas Proveedoras")
-        csv_vendors = st.session_state.vendedores_db.to_csv(index=False).encode('utf-8')
+        # Exclude raw bytes for CSV export
+        export_v = st.session_state.vendedores_db.drop(columns=["File_Bytes"], errors="ignore")
+        csv_vendors = export_v.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="Descargar Matriz de Empresas (CSV)",
             data=csv_vendors,
-            file_name="BHP_ENC3430_Ofertas_Proveedores.csv",
+            file_name="CoxChile_ENC3430_Ofertas_Proveedores.csv",
             mime="text/csv"
         )
