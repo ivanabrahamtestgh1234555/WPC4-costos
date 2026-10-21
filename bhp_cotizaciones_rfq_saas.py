@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 # PAGE CONFIGURATION
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Cox Chile | Portal de Cotizaciones y Licitaciones",
+    page_title="Cox Chile | Portal de Cotizaciones y Gestión de Proveedores",
     page_icon="📋",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -42,13 +42,6 @@ st.markdown("""
         border-radius: 6px;
         font-weight: bold;
     }
-    .cox-logo-box {
-        background-color: #0F172A;
-        padding: 12px;
-        border-radius: 8px;
-        text-align: center;
-        margin-bottom: 15px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -57,55 +50,60 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 if "equipos_db" not in st.session_state:
     initial_equipos = [
-        {"ID": "EQ-001", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Equipos Mayores", "Equipo": "Switchgear GIS 245 kV (Suministro y Montaje)", "Cantidad": 1.0, "Unidad": "Gl", "Presupuesto_USD": 14500000.0, "Cotizado": True, "Fecha": "2026-09-15", "Proveedor_Lider": "Hitachi Energy"},
-        {"ID": "EQ-002", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Equipos Mayores", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Cantidad": 3.0, "Unidad": "c/u", "Presupuesto_USD": 11400000.0, "Cotizado": True, "Fecha": "2026-09-20", "Proveedor_Lider": "Siemens Energy"},
-        {"ID": "EQ-003", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Equipos Mayores", "Equipo": "Ductos de Barras GIL 220 kV (Conexión GIS-Trafo)", "Cantidad": 1.0, "Unidad": "Gl", "Presupuesto_USD": 3200000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-004", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Infraestructura", "Equipo": "Galpón Prefabricado GIS (31,5x22,7x14 m)", "Cantidad": 1.0, "Unidad": "Gl", "Presupuesto_USD": 1850000.0, "Cotizado": True, "Fecha": "2026-10-01", "Proveedor_Lider": "Cintec / Resa"},
-        {"ID": "EQ-005", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Salas Eléctricas", "Equipo": "Sala Prefabricada SS/GG y Control (ERoom)", "Cantidad": 1.0, "Unidad": "Gl", "Presupuesto_USD": 1200000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-006", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Equipos Auxiliares", "Equipo": "Grupo Generador Emergencia MT (4,16 kV - 2.750 kVA)", "Cantidad": 1.0, "Unidad": "c/u", "Presupuesto_USD": 950000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-007", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Equipos Auxiliares", "Equipo": "Subestaciones Unitarias 7,5 MVA (33/4,16 kV)", "Cantidad": 3.0, "Unidad": "c/u", "Presupuesto_USD": 1260000.0, "Cotizado": True, "Fecha": "2026-10-05", "Proveedor_Lider": "WEG Chile"},
-        {"ID": "EQ-008", "Area": "S/E EGP 220/33 kV (GIS)", "Categoria": "Equipos Auxiliares", "Equipo": "Resistencia Puesta a Tierra NGR y Auxiliares", "Cantidad": 3.0, "Unidad": "c/u", "Presupuesto_USD": 255000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        
-        {"ID": "EQ-009", "Area": "S/E Monte Mina 220 kV (AIS)", "Categoria": "Equipos Mayores", "Equipo": "Interruptor Tanque Muerto SF6 220 kV 3150A 50kA", "Cantidad": 3.0, "Unidad": "c/u", "Presupuesto_USD": 660000.0, "Cotizado": True, "Fecha": "2026-09-18", "Proveedor_Lider": "Hitachi Energy"},
-        {"ID": "EQ-010", "Area": "S/E Monte Mina 220 kV (AIS)", "Categoria": "Equipos Mayores", "Equipo": "Transformador de Potencial Capacitivo (TPC) 220 kV", "Cantidad": 10.0, "Unidad": "c/u", "Presupuesto_USD": 420000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-011", "Area": "S/E Monte Mina 220 kV (AIS)", "Categoria": "Equipos Mayores", "Equipo": "Desconectador Tripolar Apertura Central 220 kV", "Cantidad": 10.0, "Unidad": "c/u", "Presupuesto_USD": 394000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-012", "Area": "S/E Monte Mina 220 kV (AIS)", "Categoria": "Cables Subterráneos", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Cantidad": 1800.0, "Unidad": "m", "Presupuesto_USD": 810000.0, "Cotizado": True, "Fecha": "2026-09-28", "Proveedor_Lider": "Prysmian Group"},
-        {"ID": "EQ-013", "Area": "S/E Monte Mina 220 kV (AIS)", "Categoria": "Cables Subterráneos", "Equipo": "Mufas de Transición Aire/Cable XLPE 220 kV", "Cantidad": 12.0, "Unidad": "c/u", "Presupuesto_USD": 420000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        
-        {"ID": "EQ-014", "Area": "Línea Transmisión 2x220 kV", "Categoria": "Estructuras LAT", "Equipo": "Torres Suspensión Reticuladas 22AD.1M3 (66 Torres)", "Cantidad": 662580.0, "Unidad": "kg", "Presupuesto_USD": 2782836.0, "Cotizado": True, "Fecha": "2026-09-12", "Proveedor_Lider": "Metalúrgica SAE"},
-        {"ID": "EQ-015", "Area": "Línea Transmisión 2x220 kV", "Categoria": "Estructuras LAT", "Equipo": "Torres Anclaje/Remate 22CD/22DD (18 Torres)", "Cantidad": 372300.0, "Unidad": "kg", "Presupuesto_USD": 1675350.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-016", "Area": "Línea Transmisión 2x220 kV", "Categoria": "Conductores", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM (25.7 km)", "Cantidad": 312000.0, "Unidad": "m", "Presupuesto_USD": 4524000.0, "Cotizado": True, "Fecha": "2026-09-25", "Proveedor_Lider": "Prysmian / General Cable"},
-        {"ID": "EQ-017", "Area": "Línea Transmisión 2x220 kV", "Categoria": "Conductores", "Equipo": "Cable de Guardia OPGW 24 Fibras Ópticas", "Cantidad": 27000.0, "Unidad": "m", "Presupuesto_USD": 229500.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
-        {"ID": "EQ-018", "Area": "Línea Transmisión 2x220 kV", "Categoria": "Accesorios LAT", "Equipo": "Cadenas de Aisladores Poliméricos 220 kV", "Cantidad": 504.0, "Unidad": "Juego", "Presupuesto_USD": 428400.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"}
+        # --- EQUIPOS 220 KV (AMPLIACION S/E MONTEMINA 220 kV) ---
+        {"ID": "MM-001", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "INTERRUPTOR DE PODER TANQUE MUERTO, SF6, 245 kV, CON TTCC TIPO BUSHING, ACCIONAMIENTO MONOPOLAR; Ir: 4000 A; Icc: 50 kA; BIL: 1050 kVcr. @ 3200 m.s.n.m.", "Cantidad": 4.0, "Unidad": "c/u", "Presupuesto_USD": 880000.0, "Cotizado": True, "Fecha": "2026-09-18", "Proveedor_Lider": "Hitachi Energy"},
+        {"ID": "MM-002", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "TRANSFORMADOR DE POTENCIAL CAPACITIVO CL. 245 kV; BIL 1050 kVcr; 230: √3 / 0,115: √3 / 0,115: √3 S1 y S2: CL 0,2/3P - 15 VA; Df 31 mm/kV.", "Cantidad": 10.0, "Unidad": "c/u", "Presupuesto_USD": 420000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "MM-003", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "DESCONECTADOR TRIPOLAR DE APERTURA CENTRAL SPT 220 kV, CL 245 kV; BIL 1175 kVcr @ 3200 m.s.n.m. In 3150 A; Icc 50 kA 3s.", "Cantidad": 8.0, "Unidad": "c/u", "Presupuesto_USD": 304000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "MM-004", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "DESCONECTADOR TRIPOLAR DE APERTURA CENTRAL CPT 220 kV, CL 245 kV; BIL 1175 kVcr @ 3200 m.s.n.m. In 3150 A; Icc 50 kA 3s.", "Cantidad": 2.0, "Unidad": "c/u", "Presupuesto_USD": 90000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "MM-005", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "TRAMPA DE ONDA. 0,2 mH, 220 kV, 2000 A, 50 kA.", "Cantidad": 4.0, "Unidad": "c/u", "Presupuesto_USD": 112000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "MM-006", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "AISLADOR DE PEDESTAL PORCELANA CL.: 245 kV, BIL 1050 @ 3200 m.s.n.m.; Df: 9300 mm/kV; 10 kN", "Cantidad": 6.0, "Unidad": "c/u", "Presupuesto_USD": 24000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "MM-007", "Area": "Ampliación S/E Monte Mina 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "PARARRAYOS 220 kV; Uc: 154 kV; In: 20 kA; Is: 65 KA", "Cantidad": 6.0, "Unidad": "c/u", "Presupuesto_USD": 75000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+
+        # --- EQUIPOS 220 KV (PATIO DE MUFAS 220 kV) ---
+        {"ID": "PM-001", "Area": "Patio de Mufas 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "PARARRAYOS 220 kV; Uc: 154 kV; In: 20 kA; Is: 65 KA", "Cantidad": 12.0, "Unidad": "c/u", "Presupuesto_USD": 150000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "PM-002", "Area": "Patio de Mufas 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "AISLADOR DE PEDESTAL PORCELANA CL.: 245 kV, BIL 1050 @ 3200 m.s.n.m.; Df: 9300 mm/kV; 10 kN", "Cantidad": 12.0, "Unidad": "c/u", "Presupuesto_USD": 48000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "PM-003", "Area": "Patio de Mufas 220 kV", "Categoria": "Cables y Conectores", "Equipo": "MUFA (CONECTOR DE TRANSICIÓN) AIRE / CABLE AISLADO XLPE 3000 mm2 / 220 kV", "Cantidad": 32.0, "Unidad": "c/u", "Presupuesto_USD": 1120000.0, "Cotizado": True, "Fecha": "2026-09-28", "Proveedor_Lider": "Prysmian Group"},
+        {"ID": "PM-004", "Area": "Patio de Mufas 220 kV", "Categoria": "Cables y Conectores", "Equipo": "MUFA (CONECTOR DE TRANSICIÓN) AIRE / CABLE AISLADO XLPE 3000 mm2 / 220 kV", "Cantidad": 8.0, "Unidad": "c/u", "Presupuesto_USD": 280000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "PM-005", "Area": "Patio de Mufas 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "DESCONECTADOR MONOPOLAR", "Cantidad": 16.0, "Unidad": "c/u", "Presupuesto_USD": 192000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "PM-006", "Area": "Patio de Mufas 220 kV", "Categoria": "Equipos 220 kV", "Equipo": "BARRA AUXILIAR 245 Kv", "Cantidad": 4.0, "Unidad": "c/u", "Presupuesto_USD": 120000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "PM-007", "Area": "Patio de Mufas 220 kV", "Categoria": "Cables y Conectores", "Equipo": "CONDUCTOR AISLACIÓN XLPE 3000 mm2, 220 Kv", "Cantidad": 6000.0, "Unidad": "m", "Presupuesto_USD": 2700000.0, "Cotizado": True, "Fecha": "2026-09-28", "Proveedor_Lider": "Prysmian Group"},
+        {"ID": "PM-008", "Area": "Patio de Mufas 220 kV", "Categoria": "Cables y Conectores", "Equipo": "CONECTOR ENCHUFABLE PARA CABLE XLPE 3000 mm2 / 220 kV", "Cantidad": 40.0, "Unidad": "c/u", "Presupuesto_USD": 320000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "PM-009", "Area": "Patio de Mufas 220 kV", "Categoria": "Cables y Conectores", "Equipo": "LINK BOX", "Cantidad": 32.0, "Unidad": "c/u", "Presupuesto_USD": 160000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+
+        # --- EQUIPOS S/E EGP 220/33 KV ---
+        {"ID": "EGP-001", "Area": "S/E EGP 220/33 kV", "Categoria": "Protecciones y Medición", "Equipo": "PARARRAYOS DE LINEA CON CONTADOR DE DESCARGA 220 kV", "Cantidad": 15.0, "Unidad": "c/u", "Presupuesto_USD": 187500.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-002", "Area": "S/E EGP 220/33 kV", "Categoria": "Protecciones y Medición", "Equipo": "TRANSFORMADOR DE POTENCIAL CAPACITIVO 230/√3 : 0.115/√3 : 0.115/√3 kV", "Cantidad": 4.0, "Unidad": "c/u", "Presupuesto_USD": 168000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-003", "Area": "S/E EGP 220/33 kV", "Categoria": "Aisladores y Soportes", "Equipo": "AISLADOR DE PEDESTAL PORCELANA CL.: 245 kV, BIL 1050 @ 3200 m.s.n.m.; Df: 9300 mm/kV; 10 kN", "Cantidad": 18.0, "Unidad": "c/u", "Presupuesto_USD": 72000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-004", "Area": "S/E EGP 220/33 kV", "Categoria": "Protecciones y Medición", "Equipo": "TRANSFORMADOR DE POTENCIAL CARGABLE 230/√3/0.4 kV", "Cantidad": 6.0, "Unidad": "c/u", "Presupuesto_USD": 210000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-005", "Area": "S/E EGP 220/33 kV", "Categoria": "Generación y Servicios Auxiliares", "Equipo": "GRUPO GENERADOR DE EMERGENCIA, 400-231 V, 50 Hz., 200 kVA", "Cantidad": 1.0, "Unidad": "c/u", "Presupuesto_USD": 85000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-006", "Area": "S/E EGP 220/33 kV", "Categoria": "Generación y Servicios Auxiliares", "Equipo": "GRUPO GENERADOR 4,16 kV; 2750 MVA @ 3200 m.s.n.m.", "Cantidad": 6.0, "Unidad": "c/u", "Presupuesto_USD": 5700000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-007", "Area": "S/E EGP 220/33 kV", "Categoria": "Telecomunicaciones / Onda", "Equipo": "TRAMPA DE ONDA. 0,2 mH, 220 kV, 2000 A, 50 kA.", "Cantidad": 4.0, "Unidad": "c/u", "Presupuesto_USD": 112000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-008", "Area": "S/E EGP 220/33 kV", "Categoria": "Transformadores y Subestaciones", "Equipo": "SUBESTACIÓN UNITARIA 7,5 MVA (KNAN, 65°C) a 3200 m.s.n.m. 4,16/33 kV", "Cantidad": 3.0, "Unidad": "c/u", "Presupuesto_USD": 1260000.0, "Cotizado": True, "Fecha": "2026-10-05", "Proveedor_Lider": "WEG Chile"},
+        {"ID": "EGP-009", "Area": "S/E EGP 220/33 kV", "Categoria": "Calidad de Energía", "Equipo": "FILTRO DE ARMÓNICOS 33 kV Y DE COMPENSACIÓN DE REACTIVOS 33 kV", "Cantidad": 3.0, "Unidad": "c/u", "Presupuesto_USD": 1800000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-010", "Area": "S/E EGP 220/33 kV", "Categoria": "Maniobras y Desconexión", "Equipo": "DESCONECTADOR TRIPOLAR 33 kV CPT MOTORIZADO", "Cantidad": 6.0, "Unidad": "c/u", "Presupuesto_USD": 180000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"},
+        {"ID": "EGP-011", "Area": "S/E EGP 220/33 kV", "Categoria": "Protecciones y Medición", "Equipo": "PARARRAYOS TIPO ESTACIÓN 33 kV", "Cantidad": 18.0, "Unidad": "c/u", "Presupuesto_USD": 108000.0, "Cotizado": False, "Fecha": "-", "Proveedor_Lider": "Pendiente"}
     ]
     st.session_state.equipos_db = pd.DataFrame(initial_equipos)
 
 if "vendedores_db" not in st.session_state:
     initial_vendedores = [
-        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "Hitachi Energy (ABB)", "Precio_USD": 14500000.0, "Lead_Time_Meses": 14, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo_Adjunto": "Cotizacion_Hitachi_GIS245kV.pdf", "File_Bytes": None},
-        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "Siemens Energy", "Precio_USD": 15200000.0, "Lead_Time_Meses": 15, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Oferta_Siemens_GIS.pdf", "File_Bytes": None},
-        {"ID": "EQ-001", "Equipo": "Switchgear GIS 245 kV", "Empresa": "GE Vernova", "Precio_USD": 14850000.0, "Lead_Time_Meses": 14, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "GE_Vernova_Proposal.pdf", "File_Bytes": None},
-        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Siemens Energy", "Precio_USD": 3800000.0, "Lead_Time_Meses": 12, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo_Adjunto": "Siemens_Trafo125MVA.pdf", "File_Bytes": None},
-        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Hitachi Energy", "Precio_USD": 3950000.0, "Lead_Time_Meses": 13, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Hitachi_Trafo_Quote.pdf", "File_Bytes": None},
-        {"ID": "EQ-002", "Equipo": "Transformador de Poder 220/33 kV (125 MVA)", "Empresa": "Hyundai Electric", "Precio_USD": 3650000.0, "Lead_Time_Meses": 11, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Hyundai_Transformers_Offer.pdf", "File_Bytes": None},
-        {"ID": "EQ-012", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Empresa": "Prysmian Group", "Precio_USD": 450.0, "Lead_Time_Meses": 8, "Garantia_Años": 5, "Estado": "Adjudicada Base", "Archivo_Adjunto": "Prysmian_XLPE_Quote.pdf", "File_Bytes": None},
-        {"ID": "EQ-012", "Equipo": "Cable Aislado XLPE 220 kV 3000 mm²", "Empresa": "Nexans", "Precio_USD": 475.0, "Lead_Time_Meses": 9, "Garantia_Años": 5, "Estado": "En Evaluación", "Archivo_Adjunto": "Nexans_HV_Cable.pdf", "File_Bytes": None},
-        {"ID": "EQ-016", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM", "Empresa": "Prysmian / General Cable", "Precio_USD": 14.50, "Lead_Time_Meses": 6, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo_Adjunto": "GeneralCable_AAAC.pdf", "File_Bytes": None},
-        {"ID": "EQ-016", "Equipo": "Conductor de Fase AAAC Flint 740.8 MCM", "Empresa": "Midal Cables", "Precio_USD": 13.90, "Lead_Time_Meses": 7, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo_Adjunto": "Midal_Conductors_Offer.pdf", "File_Bytes": None}
+        {"ID": "MM-001", "Equipo": "INTERRUPTOR DE PODER TANQUE MUERTO, SF6, 245 kV", "Empresa": "Hitachi Energy (ABB)", "Precio_USD": 220000.0, "Lead_Time_Meses": 14, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo": None},
+        {"ID": "MM-001", "Equipo": "INTERRUPTOR DE PODER TANQUE MUERTO, SF6, 245 kV", "Empresa": "Siemens Energy", "Precio_USD": 235000.0, "Lead_Time_Meses": 15, "Garantia_Años": 2, "Estado": "En Evaluación", "Archivo": None},
+        {"ID": "PM-003", "Equipo": "MUFA AIRE / CABLE AISLADO XLPE 3000 mm2 / 220 kV", "Empresa": "Prysmian Group", "Precio_USD": 35000.0, "Lead_Time_Meses": 8, "Garantia_Años": 5, "Estado": "Adjudicada Base", "Archivo": None},
+        {"ID": "EGP-008", "Equipo": "SUBESTACIÓN UNITARIA 7,5 MVA 4,16/33 kV", "Empresa": "WEG Chile", "Precio_USD": 420000.0, "Lead_Time_Meses": 10, "Garantia_Años": 3, "Estado": "Adjudicada Base", "Archivo": None}
     ]
     st.session_state.vendedores_db = pd.DataFrame(initial_vendedores)
 
 # -----------------------------------------------------------------------------
-# SIDEBAR NAVIGATION WITH COX LOGO
+# SIDEBAR NAVIGATION
 # -----------------------------------------------------------------------------
+# Logo Cox Chile
 st.sidebar.markdown("""
-<div class="cox-logo-box">
-    <h2 style="color: #38BDF8; margin: 0; font-weight: 800; font-size: 1.8rem; letter-spacing: 2px;">COX</h2>
-    <p style="color: #94A3B8; margin: 2px 0 0 0; font-size: 0.85rem; font-weight: 600;">Área de Estudios - Cox Chile</p>
+<div style="text-align: center; padding: 10px 0px;">
+    <h1 style="color: #1E3A8A; font-weight: 900; margin: 0; font-size: 2.2rem; letter-spacing: 2px;">COX</h1>
+    <p style="color: #2563EB; font-weight: 600; margin: 0; font-size: 0.95rem; letter-spacing: 1px;">Área de Estudios - Cox Chile</p>
 </div>
 """, unsafe_allow_html=True)
-
-st.sidebar.markdown("**Proyecto Escondida Concentrator (ENC-3430)**")
 st.sidebar.markdown("---")
 
 module = st.sidebar.radio(
@@ -127,7 +125,7 @@ st.sidebar.caption("Área de Estudios - Cox Chile")
 # -----------------------------------------------------------------------------
 if module == "📊 Dashboard de Cotizaciones & RFQ":
     st.markdown('<div class="main-header">Control Ejecutivo de Cotizaciones y Licitaciones (RFQ)</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Área de Estudios - Cox Chile | Estado de Avance de Compras y Cotizaciones - Proyecto ENC-3430</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Estado de Avance de Compras y Cotizaciones Pendientes - Área de Estudios Cox Chile</div>', unsafe_allow_html=True)
 
     df_eq = st.session_state.equipos_db
     
@@ -203,6 +201,7 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
     
     for idx, row in df_view.iterrows():
         c_check, c_info, c_supplier, c_date = st.columns([1.5, 5.5, 3, 2])
+        
         chk_key = f"chk_{row['ID']}"
         
         is_checked = c_check.checkbox(
@@ -222,7 +221,7 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
 
         with c_info:
             st.markdown(f"**{row['Equipo']}** ({row['Area']})")
-            st.caption(f"Categoría: {row['Categoria']} | Cantidad: {row['Cantidad']:,.1f} {row['Unidad']} | Presupuesto: ${row['Presupuesto_USD']:,.2f} USD")
+            st.caption(f"Categoría: {row['Categoria']} | Cantidad: {row['Cantidad']:,.1f} {row['Unidad']} | Presupuesto Est.: ${row['Presupuesto_USD']:,.2f} USD")
 
         with c_supplier:
             if is_checked:
@@ -239,8 +238,8 @@ elif module == "✅ Checklist de Cotizados (Ticket)":
 # MODULE 3: CUADRO COMPARATIVO POR EMPRESA
 # -----------------------------------------------------------------------------
 elif module == "🏢 Cuadro Comparativo por Empresa":
-    st.markdown('<div class="main-header">Tabla Comparativa de Empresas Cotizantes y Archivos Adjuntos</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Gestión de Ofertas por Proveedor, Carga y Descarga de Cotizaciones (PDF / Excel / Word)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">Tabla Comparativa de Empresas Cotizantes</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Gestión de Ofertas por Proveedor, Archivos Adjuntos y Adquisiciones del Proyecto</div>', unsafe_allow_html=True)
 
     col_select, col_add = st.columns([5, 5])
 
@@ -263,14 +262,16 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
             v_garantia = st.number_input("Años de Garantía:", min_value=1, value=2)
             v_estado = st.selectbox("Estado de la Oferta:", ["En Evaluación", "Adjudicada Base", "Desestimada"])
             
-            # FILE UPLOADER FOR QUOTATION DOCUMENTS
-            v_file = st.file_uploader("📄 Adjuntar documento de cotización (PDF, Excel, Word):", type=["pdf", "xlsx", "xls", "doc", "docx"])
+            uploaded_file = st.file_uploader("📄 Adjuntar documento de cotización (PDF, Excel, Word):", type=["pdf", "xlsx", "xls", "doc", "docx"])
             
             submit_vendor = st.form_submit_button("➕ Registrar Cotización de Empresa")
             
             if submit_vendor and v_empresa:
-                filename = v_file.name if v_file is not None else "Sin Documento Adjunto"
-                file_bytes = v_file.getvalue() if v_file is not None else None
+                file_bytes = None
+                file_name = None
+                if uploaded_file is not None:
+                    file_bytes = uploaded_file.getvalue()
+                    file_name = uploaded_file.name
                 
                 new_v_row = {
                     "ID": eq_id,
@@ -280,51 +281,44 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
                     "Lead_Time_Meses": v_lead,
                     "Garantia_Años": v_garantia,
                     "Estado": v_estado,
-                    "Archivo_Adjunto": filename,
+                    "Archivo": file_name,
                     "File_Bytes": file_bytes
                 }
                 st.session_state.vendedores_db = pd.concat([st.session_state.vendedores_db, pd.DataFrame([new_v_row])], ignore_index=True)
                 
-                # Update Equipment state to Cotizado
                 st.session_state.equipos_db.loc[st.session_state.equipos_db["ID"] == eq_id, "Cotizado"] = True
                 st.session_state.equipos_db.loc[st.session_state.equipos_db["ID"] == eq_id, "Fecha"] = pd.Timestamp.now().strftime("%Y-%m-%d")
                 if v_estado == "Adjudicada Base":
                     st.session_state.equipos_db.loc[st.session_state.equipos_db["ID"] == eq_id, "Proveedor_Lider"] = v_empresa
                 
-                st.success(f"✅ Cotización de {v_empresa} registrada exitosamente" + (f" con archivo '{filename}'" if v_file else "") + "!")
+                st.success(f"✅ Cotización de {v_empresa} registrada e integrada exitosamente!")
                 st.rerun()
 
     st.markdown("---")
-    st.subheader(f"📊 Tabla Comparativa de Ofertas y Documentos Recibidos para: '{selected_eq_name}'")
+    st.subheader(f"📊 Tabla Comparativa de Ofertas Recibidas para: '{selected_eq_name}'")
 
     offers_df = st.session_state.vendedores_db[st.session_state.vendedores_db["ID"] == eq_id]
 
     if len(offers_df) > 0:
-        # Render table with download buttons for attached files
-        for o_idx, o_row in offers_df.iterrows():
-            o_c1, o_c2, o_c3, o_c4, o_c5, o_c6 = st.columns([3, 2.5, 2, 2, 2, 2.5])
-            with o_c1:
-                st.markdown(f"**{o_row['Empresa']}**")
-                st.caption(f"Estado: {o_row['Estado']}")
-            with o_c2:
-                st.markdown(f"**${o_row['Precio_USD']:,.2f} USD**")
-            with o_c3:
-                st.write(f"⏱️ {o_row['Lead_Time_Meses']} meses")
-            with o_c4:
-                st.write(f"🛡️ {o_row['Garantia_Años']} años")
-            with o_c5:
-                st.write(f"📎 `{o_row['Archivo_Adjunto']}`")
-            with o_c6:
-                if o_row.get("File_Bytes") is not None:
-                    st.download_button(
-                        label="📥 Descargar Cotización",
-                        data=o_row["File_Bytes"],
-                        file_name=o_row["Archivo_Adjunto"],
-                        key=f"dl_{eq_id}_{o_idx}"
-                    )
-                else:
-                    st.caption("Ficha de referencia base")
-            st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
+        display_cols = ["Empresa", "Precio_USD", "Lead_Time_Meses", "Garantia_Años", "Estado", "Archivo"]
+        st.dataframe(
+            offers_df[display_cols].style.format({
+                "Precio_USD": "${:,.2f}",
+                "Lead_Time_Meses": "{:d} meses",
+                "Garantia_Años": "{:d} años"
+            }).highlight_min(axis=0, subset=["Precio_USD"], color="#D1FAE5"),
+            use_container_width=True
+        )
+
+        # Download buttons for attached files
+        for idx_v, row_v in offers_df.iterrows():
+            if "File_Bytes" in row_v and row_v["File_Bytes"] is not None:
+                st.download_button(
+                    label=f"📥 Descargar Cotización: {row_v['Empresa']} ({row_v['Archivo']})",
+                    data=row_v["File_Bytes"],
+                    file_name=row_v["Archivo"],
+                    key=f"dl_{idx_v}"
+                )
 
         fig_offers = px.bar(
             offers_df,
@@ -343,7 +337,7 @@ elif module == "🏢 Cuadro Comparativo por Empresa":
 # -----------------------------------------------------------------------------
 elif module == "📦 Base de Datos Maestra de Equipos":
     st.markdown('<div class="main-header">Base de Datos de Equipamiento por Cotizar</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Área de Estudios - Cox Chile | Registro Maestro MTO y Licitación</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Registro Maestro MTO y Estado de Licitación - Área de Estudios Cox Chile</div>', unsafe_allow_html=True)
 
     c_f1, c_f2, c_f3 = st.columns(3)
     with c_f1:
@@ -366,7 +360,7 @@ elif module == "📦 Base de Datos Maestra de Equipos":
             "Presupuesto_USD": "${:,.2f}"
         }),
         use_container_width=True,
-        height=450
+        height=500
     )
 
 # -----------------------------------------------------------------------------
@@ -374,7 +368,7 @@ elif module == "📦 Base de Datos Maestra de Equipos":
 # -----------------------------------------------------------------------------
 elif module == "📤 Exportar Reportes de Licitación":
     st.markdown('<div class="main-header">Centro de Exportación de Datos de Licitación</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Área de Estudios - Cox Chile | Descarga de Cotizaciones y Ofertas (CSV)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Descarga de Bases de Datos de Cotizaciones y Ofertas de Proveedores (CSV)</div>', unsafe_allow_html=True)
 
     d1, d2 = st.columns(2)
     with d1:
@@ -383,18 +377,16 @@ elif module == "📤 Exportar Reportes de Licitación":
         st.download_button(
             label="Descargar Registro de Cotizaciones (CSV)",
             data=csv_eq,
-            file_name="CoxChile_ENC3430_Estado_Cotizaciones.csv",
+            file_name="CoxChile_Estado_Cotizaciones.csv",
             mime="text/csv"
         )
 
     with d2:
         st.subheader("🏢 Exportar Ofertas de Empresas Proveedoras")
-        # Exclude raw bytes for CSV export
-        export_v = st.session_state.vendedores_db.drop(columns=["File_Bytes"], errors="ignore")
-        csv_vendors = export_v.to_csv(index=False).encode('utf-8')
+        csv_vendors = st.session_state.vendedores_db.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="Descargar Matriz de Empresas (CSV)",
             data=csv_vendors,
-            file_name="CoxChile_ENC3430_Ofertas_Proveedores.csv",
+            file_name="CoxChile_Ofertas_Proveedores.csv",
             mime="text/csv"
         )
